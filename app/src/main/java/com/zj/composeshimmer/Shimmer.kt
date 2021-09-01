@@ -5,6 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.DrawModifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
@@ -21,7 +22,11 @@ import kotlin.math.tan
 
 fun Modifier.shimmer(
     visible: Boolean,
-    colors: List<Color> = listOf(Color(0x4DCCCCCC), Color(0xE6CCCCCC), Color(0x4DCCCCCC)),
+    colors: List<Color> = listOf(
+        Color.LightGray.copy(alpha = 0.3f),
+        Color.LightGray.copy(alpha = 0.9f),
+        Color.LightGray.copy(alpha = 0.3f)
+    ),
     colorStops: List<Float> = listOf(0.1f, 0.5f, 0.9f)
 ): Modifier = composed {
     val infiniteTransition = rememberInfiniteTransition()
@@ -52,7 +57,7 @@ internal class ShimmerModifier(
         style = PaintingStyle.Fill
         blendMode = BlendMode.SrcIn
     }
-    private val angleTan = tan(Math.toRadians(30.toDouble())).toFloat()
+    private val angleTan = tan(Math.toRadians(20.toDouble())).toFloat()
     private var translateHeight = 0f
     private var translateWidth = 0f
 
@@ -64,7 +69,7 @@ internal class ShimmerModifier(
                     val dx = -(translateWidth) + (translateWidth * 2 * progress)
                     paint.shader?.transform {
                         reset()
-                        postRotate(30f, size.width / 2f, size.height / 2f)
+                        postRotate(20f, size.width / 2f, size.height / 2f)
                         postTranslate(dx, 0f)
                     }
                     it.drawRect(Rect(0f, 0f, size.width, size.height), paint = paint)
