@@ -18,64 +18,38 @@ import androidx.compose.ui.layout.MeasureScope
 import androidx.compose.ui.unit.Constraints
 import androidx.core.graphics.transform
 
-//fun Modifier.shimmer(
-//    visible: Boolean
-//): Modifier = composed {
-//    drawWithContent {
-//        drawContent()
-//        if (visible) {
-//            drawRect(color = Color.Blue)
-//        }
-//    }
-//}
-
-//fun Modifier.shimmer(visible: Boolean): Modifier = this.then(
-//
-//    ShimmerModifier(visible = visible)
-//)
-
-fun Modifier.shimmer(visible: Boolean): Modifier = composed {
+fun Modifier.shimmer(
+    visible: Boolean,
+    colors: List<Color> = listOf(Color(0x4DCCCCCC), Color(0xE6CCCCCC), Color(0x4DCCCCCC)),
+    colorStops: List<Float> = listOf(0.1f, 0.5f, 0.9f)
+): Modifier = composed {
     val infiniteTransition = rememberInfiniteTransition()
     val progress by infiniteTransition.animateFloat(
         initialValue = 0f,
         targetValue = 1.0f,
         animationSpec = infiniteRepeatable(
             tween(
-                durationMillis = 1300,
+                durationMillis = 1000,
                 delayMillis = 300,
                 easing = LinearEasing
             ),
             repeatMode = RepeatMode.Restart
         )
     )
-    ShimmerModifier(visible = visible, progress = progress)
+    ShimmerModifier(visible = visible, progress = progress, colors, colorStops)
 }
 
 internal class ShimmerModifier(
     private val visible: Boolean,
-    private val baseAlpha: Float = 0.3f,
-    private val highlightAlpha: Float = 0.9f,
-    private val intensity: Float = 0f,
-    private val dropOff: Float = 0.5f,
-    private val progress: Float
+    private val progress: Float,
+    private val colors: List<Color>,
+    private val colorStops: List<Float>,
 ) : DrawModifier, LayoutModifier {
-    private val shaderColors = listOf(
-        Color.Unspecified.copy(alpha = baseAlpha),
-        Color.Unspecified.copy(alpha = highlightAlpha),
-        Color.Unspecified.copy(alpha = highlightAlpha),
-        Color.Unspecified.copy(alpha = baseAlpha)
-    )
-    private val colorStops: List<Float> = listOf(
-        ((1f - intensity - dropOff) / 2f).coerceIn(0f, 1f),
-        ((1f - intensity - 0.001f) / 2f).coerceIn(0f, 1f),
-        ((1f + intensity + 0.001f) / 2f).coerceIn(0f, 1f),
-        ((1f + intensity + dropOff) / 2f).coerceIn(0f, 1f)
-    )
     private val cleanPaint = Paint()
     private val paint = Paint().apply {
         isAntiAlias = true
         style = PaintingStyle.Fill
-        blendMode = BlendMode.DstIn
+        blendMode = BlendMode.SrcIn
     }
 
     override fun ContentDrawScope.draw() {
@@ -110,7 +84,7 @@ internal class ShimmerModifier(
         paint.shader = LinearGradientShader(
             Offset(0f, 0f),
             Offset(size.width, 0f),
-            shaderColors,
+            colors,
             colorStops
         )
     }
