@@ -17,6 +17,7 @@ import androidx.compose.ui.layout.MeasureResult
 import androidx.compose.ui.layout.MeasureScope
 import androidx.compose.ui.unit.Constraints
 import androidx.core.graphics.transform
+import kotlin.math.tan
 
 fun Modifier.shimmer(
     visible: Boolean,
@@ -51,15 +52,19 @@ internal class ShimmerModifier(
         style = PaintingStyle.Fill
         blendMode = BlendMode.SrcIn
     }
+    private val angleTan = tan(Math.toRadians(30.toDouble())).toFloat()
+    private var translateHeight = 0f
+    private var translateWidth = 0f
 
     override fun ContentDrawScope.draw() {
         drawIntoCanvas {
             it.withSaveLayer(Rect(0f, 0f, size.width, size.height), paint = cleanPaint) {
                 drawContent()
                 if (visible) {
-                    val dx = -(size.width) + (size.width * 2 * progress)
+                    val dx = -(translateWidth) + (translateWidth * 2 * progress)
                     paint.shader?.transform {
                         reset()
+                        postRotate(30f, size.width / 2f, size.height / 2f)
                         postTranslate(dx, 0f)
                     }
                     it.drawRect(Rect(0f, 0f, size.width, size.height), paint = paint)
@@ -81,6 +86,7 @@ internal class ShimmerModifier(
     }
 
     private fun updateSize(size: Size) {
+        translateWidth = size.width + angleTan * size.height
         paint.shader = LinearGradientShader(
             Offset(0f, 0f),
             Offset(size.width, 0f),
