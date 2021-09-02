@@ -22,12 +22,7 @@ import kotlin.math.tan
 
 fun Modifier.shimmer(
     visible: Boolean,
-    colors: List<Color> = listOf(
-        Color.LightGray.copy(alpha = 0.3f),
-        Color.LightGray.copy(alpha = 0.9f),
-        Color.LightGray.copy(alpha = 0.3f)
-    ),
-    colorStops: List<Float> = listOf(0.1f, 0.5f, 0.9f)
+    config: ShimmerConfig = ShimmerConfig()
 ): Modifier = composed {
     val infiniteTransition = rememberInfiniteTransition()
     val progress by infiniteTransition.animateFloat(
@@ -42,14 +37,13 @@ fun Modifier.shimmer(
             repeatMode = RepeatMode.Restart
         )
     )
-    ShimmerModifier(visible = visible, progress = progress, colors, colorStops)
+    ShimmerModifier(visible = visible, progress = progress, config = config)
 }
 
 internal class ShimmerModifier(
     private val visible: Boolean,
     private val progress: Float,
-    private val colors: List<Color>,
-    private val colorStops: List<Float>,
+    private val config: ShimmerConfig
 ) : DrawModifier, LayoutModifier {
     private val cleanPaint = Paint()
     private val paint = Paint().apply {
@@ -57,9 +51,23 @@ internal class ShimmerModifier(
         style = PaintingStyle.Fill
         blendMode = BlendMode.SrcIn
     }
-    private val angleTan = tan(Math.toRadians(20.toDouble())).toFloat()
+    private val angleTan = tan(Math.toRadians(config.angle.toDouble())).toFloat()
     private var translateHeight = 0f
     private var translateWidth = 0f
+    private val intensity = config.intensity
+    private val dropOff = config.dropOff
+    private val colors = listOf(
+        config.contentColor,
+        config.higLightColor,
+        config.higLightColor,
+        config.contentColor
+    )
+    private val colorStops: List<Float> = listOf(
+        ((1f - intensity - dropOff) / 2f).coerceIn(0f, 1f),
+        ((1f - intensity - 0.001f) / 2f).coerceIn(0f, 1f),
+        ((1f + intensity + 0.001f) / 2f).coerceIn(0f, 1f),
+        ((1f + intensity + dropOff) / 2f).coerceIn(0f, 1f)
+    )
 
     override fun ContentDrawScope.draw() {
         drawIntoCanvas {
@@ -69,7 +77,7 @@ internal class ShimmerModifier(
                     val dx = -(translateWidth) + (translateWidth * 2 * progress)
                     paint.shader?.transform {
                         reset()
-                        postRotate(20f, size.width / 2f, size.height / 2f)
+                        postRotate(config.angle, size.width / 2f, size.height / 2f)
                         postTranslate(dx, 0f)
                     }
                     it.drawRect(Rect(0f, 0f, size.width, size.height), paint = paint)
