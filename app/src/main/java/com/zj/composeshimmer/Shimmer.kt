@@ -2,10 +2,12 @@ package com.zj.composeshimmer
 
 import androidx.compose.animation.core.*
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.DrawModifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
@@ -24,19 +26,22 @@ fun Modifier.shimmer(
     visible: Boolean,
     config: ShimmerConfig = ShimmerConfig()
 ): Modifier = composed {
-    val infiniteTransition = rememberInfiniteTransition()
-    val progress by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 1.0f,
-        animationSpec = infiniteRepeatable(
-            tween(
-                durationMillis = 1000,
-                delayMillis = 300,
-                easing = LinearEasing
+    var progress: Float by remember { mutableStateOf(0f) }
+    if (visible) {
+        val infiniteTransition = rememberInfiniteTransition()
+        progress = infiniteTransition.animateFloat(
+            initialValue = 0f,
+            targetValue = 1f,
+            animationSpec = infiniteRepeatable(
+                tween(
+                    durationMillis = config.duration.toInt(),
+                    delayMillis = config.delay.toInt(),
+                    easing = LinearEasing
+                ),
+                repeatMode = RepeatMode.Restart
             ),
-            repeatMode = RepeatMode.Restart
-        )
-    )
+        ).value
+    }
     ShimmerModifier(visible = visible, progress = progress, config = config)
 }
 
