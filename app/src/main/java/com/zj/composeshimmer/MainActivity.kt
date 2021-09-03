@@ -7,6 +7,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Slider
 import androidx.compose.material.Surface
@@ -14,11 +15,10 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.placeholder.PlaceholderHighlight
-import com.google.accompanist.placeholder.material.placeholder
-import com.google.accompanist.placeholder.material.shimmer
 import com.zj.composeshimmer.ui.theme.ComposeShimmerTheme
 
 class MainActivity : ComponentActivity() {
@@ -36,7 +36,7 @@ class MainActivity : ComponentActivity() {
 }
 
 class ShimmerModel {
-    var baseColor: Color by mutableStateOf(Color.LightGray.copy(alpha = 0.3f))
+    var contentColor: Color by mutableStateOf(Color.LightGray.copy(alpha = 0.3f))
 
     var highlightColor: Color by mutableStateOf(Color.LightGray.copy(alpha = 0.8f))
 
@@ -60,7 +60,7 @@ fun Greeting(name: String) {
                     .fillMaxWidth()
                     .shimmer(
                         loading, config = ShimmerConfig(
-                            contentColor = model.baseColor,
+                            contentColor = model.contentColor,
                             higLightColor = model.highlightColor,
                             dropOff = model.dropOff,
                             intensity = model.intensity,
@@ -78,25 +78,10 @@ fun Greeting(name: String) {
             }
         }
         item {
-            TestConfig(model = model)
+            ConfigSlide(model = model)
         }
         item {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    text = "确定更新动画",
-                    color = Color.White,
-                    modifier = Modifier
-                        .background(Color.Blue)
-                        .padding(30.dp, 16.dp, 30.dp, 16.dp)
-                        .placeholder(true, highlight = PlaceholderHighlight.shimmer())
-                        .clickable {
-                            loading = false
-                            loading = true
-                        })
-            }
+            ConfigBtn(model = model)
         }
     }
 
@@ -132,7 +117,50 @@ fun PlaceHolderItem() {
 }
 
 @Composable
-private fun TestConfig(model: ShimmerModel) {
+private fun ConfigBtn(model: ShimmerModel) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text(
+            text = "修改高亮颜色",
+            color = Color.White,
+            style = MaterialTheme.typography.h5,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .padding(16.dp)
+                .width(200.dp)
+                .wrapContentHeight()
+                .clip(RoundedCornerShape(10.dp))
+                .background(Color.Blue)
+                .padding(0.dp, 10.dp)
+                .clickable {
+                    if (model.highlightColor != Color(0x4DFF0000)) {
+                        model.highlightColor = Color(0x4DFF0000)
+                    } else {
+                        model.highlightColor = Color.LightGray.copy(alpha = 0.8f)
+                    }
+                })
+        Text(
+            text = "查看更多示例",
+            color = Color.White,
+            style = MaterialTheme.typography.h5,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .padding(16.dp)
+                .width(200.dp)
+                .wrapContentHeight()
+                .clip(RoundedCornerShape(10.dp))
+                .background(Color.Blue)
+                .padding(0.dp, 10.dp)
+                .clickable {
+                    //TODO 跳转
+                })
+    }
+}
+
+@Composable
+private fun ConfigSlide(model: ShimmerModel) {
     LabelSlider(
         label = "drop off",
         value = model.dropOff,
