@@ -170,8 +170,10 @@ internal class ShimmerModifier(progress:Float) : DrawModifier, LayoutModifier {
 ### 特别鸣谢
 在实现`Compose`版骨架屏效果的过程中，主要借鉴了`Facebook`开源的[shimmer-android](https://github.com/facebook/shimmer-android)与`
 Habib Kazemi`开源的[compose-shimmer](https://github.com/kazemihabib/compose-shimmer)
+
 并在其基础上进行了一定的封装，优化了`API`调用方式并适配了最新版的`Compose`
 
 ### 项目地址
 [简单易用的Compose版骨架屏](https://github.com/shenzhen2017/ComposeShimmer)
+
 开源不易，如果项目对你有所帮助，欢迎点赞,`Star`,收藏~
