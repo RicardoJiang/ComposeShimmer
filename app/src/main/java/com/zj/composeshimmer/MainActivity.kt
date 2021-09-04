@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.zj.composeshimmer.ui.theme.ComposeShimmerTheme
+import com.zj.shimmer.ShimmerDirection
 import com.zj.shimmer.shimmer
 
 class MainActivity : ComponentActivity() {
@@ -65,7 +66,8 @@ fun Greeting(name: String) {
                             higLightColor = model.highlightColor,
                             dropOff = model.dropOff,
                             intensity = model.intensity,
-                            angle = model.angle
+                            angle = model.angle,
+                            direction = ShimmerDirection.LeftToRight
                         )
                     )
                     .clickable {

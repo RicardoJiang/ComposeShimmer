@@ -79,11 +79,32 @@ internal class ShimmerModifier(
             it.withSaveLayer(Rect(0f, 0f, size.width, size.height), paint = cleanPaint) {
                 drawContent()
                 if (visible) {
-                    val dx = -(translateWidth) + (translateWidth * 2 * progress)
+                    val (dx, dy) = when (config.direction) {
+                        ShimmerDirection.LeftToRight -> Pair(
+                            offset(-translateWidth, translateWidth, progress),
+                            0f
+                        )
+                        ShimmerDirection.RightToLeft -> Pair(
+                            offset(translateWidth, -translateWidth, progress),
+                            0f
+                        )
+
+                        ShimmerDirection.TopToBottom -> Pair(
+                            0f,
+                            offset(-translateHeight, translateHeight, progress)
+                        )
+
+
+                        ShimmerDirection.BottomToTop -> Pair(
+                            0f,
+                            offset(translateHeight, -translateHeight, progress)
+                        )
+
+                    }
                     paint.shader?.transform {
                         reset()
                         postRotate(config.angle, size.width / 2f, size.height / 2f)
-                        postTranslate(dx, 0f)
+                        postTranslate(dx, dy)
                     }
                     it.drawRect(Rect(0f, 0f, size.width, size.height), paint = paint)
                 }
@@ -105,11 +126,21 @@ internal class ShimmerModifier(
 
     private fun updateSize(size: Size) {
         translateWidth = size.width + angleTan * size.height
+        translateHeight = size.height + angleTan * size.width
+        val toOffset = when (config.direction) {
+            ShimmerDirection.RightToLeft, ShimmerDirection.LeftToRight -> Offset(size.width, 0f)
+            else -> Offset(0f, size.height)
+        }
         paint.shader = LinearGradientShader(
             Offset(0f, 0f),
-            Offset(size.width, 0f),
+            toOffset,
             colors,
             colorStops
         )
+    }
+
+    //计算位置渐变
+    private fun offset(start: Float, end: Float, progress: Float): Float {
+        return start + (end - start) * progress
     }
 }
