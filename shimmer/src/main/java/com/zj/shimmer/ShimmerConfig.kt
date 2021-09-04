@@ -8,7 +8,7 @@ data class ShimmerConfig(
     val contentColor: Color = Color.LightGray.copy(alpha = 0.3f),
     // 高亮部分颜色
     val higLightColor: Color = Color.LightGray.copy(alpha = 0.9f),
-    // 从未高亮部分到高亮部分渐变颜色
+    // 渐变部分宽度
     @FloatRange(from = 0.0, to = 1.0)
     val dropOff: Float = 0.5f,
     // 高亮部分宽度
