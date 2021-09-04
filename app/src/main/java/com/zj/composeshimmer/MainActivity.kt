@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
@@ -136,6 +137,7 @@ fun PlaceHolderItem() {
 
 @Composable
 private fun ConfigBtn(model: ShimmerModel) {
+    val context = LocalContext.current
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxWidth()
@@ -172,7 +174,7 @@ private fun ConfigBtn(model: ShimmerModel) {
                 .background(Color.Blue)
                 .padding(0.dp, 10.dp)
                 .clickable {
-                    //TODO 跳转
+                    ShimmerSampleActivity.navigate(context)
                 })
     }
 }
