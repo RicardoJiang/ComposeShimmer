@@ -21,7 +21,8 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
@@ -31,14 +32,19 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.unit.dp
+import androidx.core.view.WindowCompat
 import coil.compose.rememberImagePainter
-import com.google.accompanist.placeholder.PlaceholderHighlight
+import com.google.accompanist.insets.ProvideWindowInsets
+import com.google.accompanist.insets.statusBarsHeight
 import com.google.accompanist.placeholder.material.placeholder
-import com.google.accompanist.placeholder.material.shimmer
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.zj.composeshimmer.ui.theme.ComposeShimmerTheme
+import com.zj.shimmer.shimmer
 import kotlinx.coroutines.delay
 
 class ShimmerSampleActivity : ComponentActivity() {
@@ -50,10 +56,16 @@ class ShimmerSampleActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             ComposeShimmerTheme {
-                Sample()
+                ProvideWindowInsets {
+                    rememberSystemUiController().setStatusBarColor(
+                        Color.Transparent,
+                        darkIcons = true
+                    )
+                    Sample()
+                }
             }
         }
     }
@@ -63,10 +75,15 @@ class ShimmerSampleActivity : ComponentActivity() {
 private fun Sample() {
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text(text = "Shimmer Example") },
-                backgroundColor = MaterialTheme.colors.surface,
-            )
+            Column() {
+                Spacer(modifier = Modifier.statusBarsHeight())
+                TopAppBar(
+                    title = { Text(text = "Shimmer Example") },
+                    backgroundColor = MaterialTheme.colors.surface,
+                    elevation = 0.dp
+                )
+                Spacer(modifier = Modifier.fillMaxWidth().height(0.5.dp).background(Color.LightGray))
+            }
         },
         modifier = Modifier.fillMaxSize()
     ) {
@@ -97,11 +114,9 @@ private fun Sample() {
                     ListItem(
                         painter = rememberImagePainter(randomSampleImageUrl(index)),
                         text = "Text",
-                        // We're using the modifier provided by placeholder-material which
-                        // uses good default values for the color
+                        modifier = Modifier.shimmer(refreshing),
                         childModifier = Modifier.placeholder(
-                            visible = refreshing,
-                            highlight = PlaceholderHighlight.shimmer(),
+                            visible = refreshing
                         )
                     )
                 }
