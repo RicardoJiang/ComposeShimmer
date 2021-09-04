@@ -1,4 +1,4 @@
-package com.zj.composeshimmer
+package com.zj.shimmer
 
 import androidx.compose.animation.core.*
 import androidx.compose.runtime.getValue

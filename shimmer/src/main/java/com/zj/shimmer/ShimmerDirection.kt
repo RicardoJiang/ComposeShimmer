@@ -1,4 +1,4 @@
-package com.zj.composeshimmer
+package com.zj.shimmer
 
 enum class ShimmerDirection {
     LeftToRight,

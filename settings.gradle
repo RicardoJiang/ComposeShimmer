@@ -8,3 +8,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "ComposeShimmer"
 include ':app'
+include ':shimmer'

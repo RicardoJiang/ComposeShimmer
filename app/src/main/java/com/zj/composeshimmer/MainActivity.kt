@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.zj.composeshimmer.ui.theme.ComposeShimmerTheme
+import com.zj.shimmer.shimmer
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,7 +60,7 @@ fun Greeting(name: String) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .shimmer(
-                        loading, config = ShimmerConfig(
+                        loading, config = com.zj.shimmer.ShimmerConfig(
                             contentColor = model.contentColor,
                             higLightColor = model.highlightColor,
                             dropOff = model.dropOff,

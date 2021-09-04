@@ -1,4 +1,4 @@
-package com.zj.composeshimmer
+package com.zj.shimmer
 
 import androidx.annotation.FloatRange
 import androidx.compose.ui.graphics.Color
