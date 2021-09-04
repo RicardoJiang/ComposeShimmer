@@ -19,6 +19,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.core.view.WindowCompat
+import com.google.accompanist.insets.ProvideWindowInsets
+import com.google.accompanist.insets.statusBarsHeight
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.zj.composeshimmer.ui.theme.ComposeShimmerTheme
 import com.zj.shimmer.ShimmerDirection
 import com.zj.shimmer.shimmer
@@ -26,11 +30,17 @@ import com.zj.shimmer.shimmer
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             ComposeShimmerTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(color = MaterialTheme.colors.background) {
-                    Greeting("Android")
+                ProvideWindowInsets {
+                    rememberSystemUiController().setStatusBarColor(
+                        Color.Transparent,
+                        darkIcons = true
+                    )
+                    Surface(color = MaterialTheme.colors.background) {
+                        HomeScreen()
+                    }
                 }
             }
         }
@@ -50,12 +60,17 @@ class ShimmerModel {
 }
 
 @Composable
-fun Greeting(name: String) {
+fun HomeScreen() {
     var loading: Boolean by remember {
         mutableStateOf(true)
     }
     val model by remember { mutableStateOf(ShimmerModel()) }
     LazyColumn(modifier = Modifier.padding(20.dp)) {
+        item {
+            Spacer(
+                modifier = Modifier.statusBarsHeight()
+            )
+        }
         item {
             Column(
                 modifier = Modifier
