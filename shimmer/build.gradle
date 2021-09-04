@@ -50,3 +50,10 @@ dependencies {
     implementation "androidx.compose.ui:ui:$compose_version"
     implementation "androidx.compose.material:material:$compose_version"
 }
+
+ext {
+    PUBLISH_GROUP_ID = "io.github.shenzhen2017"        //项目包名
+    PUBLISH_ARTIFACT_ID = 'shimmer'            //项目名
+    PUBLISH_VERSION = "1.0.0"                    //版本号
+}
+apply from: "${rootProject.projectDir}/publish-mavencentral.gradle"
